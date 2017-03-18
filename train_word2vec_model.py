@@ -16,4 +16,4 @@ sentences = MySentences('./data/sentences')
 model = gensim.models.Word2Vec(sentences, size=100, workers=8)
 
 # print model[u'结算']
-model.save('./Word2Vec/word2vec.model')
+model.save('./Word2Vec/word2vec_phrase.model')

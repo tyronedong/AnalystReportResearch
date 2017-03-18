@@ -1,17 +1,19 @@
 # -*- coding: utf-8 -*-
+# 生成word2vec模型的输入文件
 from pymongo import *
 import jieba
 import jieba.posseg as pseg
 import re
 
-jieba.load_userdict('./data/userdict_mix_label.txt')
+# jieba.load_userdict('./data/userdict_mix_label.txt')
+jieba.load_userdict('./data/phrases/user_dict_phrases.txt')
 jieba.enable_parallel(8)
 
 client = MongoClient('localhost', 27017)
 db = client.AnalystReport
 collection1 = db.Report
 
-seg_sentences_file = open('./data/seg_sentences2.txt', mode='w')
+seg_sentences_file = open('./data/seg_sentences_phrase.txt', mode='w')
 
 # juhao = unicode('。'.encode('utf-8'))
 # tanhao = unicode('！'.encode('utf-8'))

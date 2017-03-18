@@ -3,12 +3,15 @@
 from pymongo import *
 import hashlib
 
-client = MongoClient('localhost', 27017)
-db = client.AnalystReport
-collection = db.Report
+client = MongoClient('183.174.228.13', 38018)
+db = client.StockReport
+collection = db.AdvReport
+ins_collection = db.ConvertedReport
 
+ins_list = []
 for report in collection.find({}):
     new_report = {}
+    new_report['_id'] = report['_id']
     new_report['docId'] = report['_id']
     new_report['url'] = report['_id']
     hash_md5 = hashlib.md5(report['_id'])
@@ -23,7 +26,7 @@ for report in collection.find({}):
     topics = []
     topics.append(report['StockName'])
     new_report['topics'] = topics
-    new_report['contentBytes'] = report['Content'].encode('utf-8')
+    new_report['contentBytes'] = bytes(report['Content'].encode('utf-8'))
 
     dict_1 = {}
     list_1 = []
@@ -54,3 +57,30 @@ for report in collection.find({}):
     list_6 = []
     list_6.append(report['Brokerage'])
     dict_6['brokerage'] = list_6
+
+    dict_7 = {}
+    dict_7['FLI'] = report['FLISencentes']
+
+    dict_8 = {}
+    dict_8['INNOV'] = report['INNOVSentences']
+
+    docDatas = []
+    docDatas.append(dict_1)
+    docDatas.append(dict_2)
+    docDatas.append(dict_3)
+    docDatas.append(dict_4)
+    docDatas.append(dict_5)
+    docDatas.append(dict_6)
+    docDatas.append(dict_7)
+    docDatas.append(dict_8)
+    new_report['docDatas'] = docDatas
+
+    new_report['size'] = len(report['Content'])
+    new_report['groupId'] = report['StockCode']
+
+    ins_list.append(new_report)
+
+    if len(ins_list) > 100:
+        ins_collection.insert_many(ins_list)
+        print report['_id']
+        ins_list = []
